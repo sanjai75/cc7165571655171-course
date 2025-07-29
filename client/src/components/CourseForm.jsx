@@ -1,5 +1,5 @@
-import { useState } from "react";
-function CourseForm({ onAdd }) {
+import { useState, useEffect } from "react";
+function CourseForm({ onAdd, initialData }) {
   const [form, setForm] = useState({
     name: "",
     code: "",
@@ -11,17 +11,23 @@ function CourseForm({ onAdd }) {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.roll) return alert("Name & Code are required");
-    onAdd({ ...form, id: Date.now() });
+    if (!form.name || !form.code) return alert ("Name & Code are required");
+    onAdd({ ...form, id: initialData?.id || Date.now() });
      setForm({ name: "", code: "", instructor: "", credits: "" });
   };
+
+  useEffect(() => {
+    if (initialData) setForm(initialData);
+  }, [initialData]);
   return (
     <form
       onSubmit={handleSubmit}
       className="bg-gray-800 p-6 shadow-md rounded-xl max-w-md mx-auto"
     >
       {" "}
-      <h2 className="text-xl font-semibold mb-4">Add New Course</h2>{" "}
+      <h2 className="text-xl font-semibold mb-4">
+        {initialData ? "Edit Course" : "Add New Course"}
+      </h2>
       <input
         className="w-full p-2 border mb-3"
         type="text"
@@ -58,8 +64,7 @@ function CourseForm({ onAdd }) {
         type="submit"
         className="bg-blue-600 text-white py-2 px-4 rounded"
       >
-        {" "}
-        Add Course{" "}
+        {initialData ? "Edit Course" : "Add New Course"}
       </button>{" "}
     </form>
   );

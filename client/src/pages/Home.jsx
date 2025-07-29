@@ -1,30 +1,28 @@
+import { useEffect, useState } from "react";
 import CourseCard from "../components/CourseCard";
 
-const dummyCourse = [
-    {
-        id: 1,
-        name: "Python",
-        code: "12345",
-        instructor: "Dr.gopi",
-        credits: "4",
-    },
-    {
-        id: 2,
-        name: "Data Structure",
-        code: "67890",
-        instructor: "Dr.muthu",
-        credits: "5",
-    },
-]
-
 function Home() {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {dummyCourse.map((course) => 
-                <CourseCard key={course.id} course={course} />
-            )}
-        </div>
-    )
-}
+  const [courses, setCourses] = useState([]);
 
-export default Home
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("courses")) || [];
+    setCourses(stored);
+  }, []);
+
+   const handleDelete = (id) => {
+      const updated = courses.filter((s) => s.id !== id);
+      localStorage.setItem("courses", JSON.stringify(updated));
+      setCourses(updated);
+    };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {courses.length === 0 ? (
+        <p>No courses added yet.</p>
+      ) : (
+        courses.map((s) => <CourseCard key={s.id} course={s} onDelete={handleDelete} />)
+      )}
+    </div>
+  );
+}
+export default Home;
